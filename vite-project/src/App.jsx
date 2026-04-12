@@ -8,13 +8,21 @@ function App() {
     setTodos([...todos, todo]);
   }
 
+  function handleDelete(todoIndex){
+    const updatedTodos = todos.filter((_, index) => index !== todoIndex);
+    setTodos(updatedTodos);
+  }
+
   return (
     <div>
        <h1>Todo App</h1>
        <Form onAdd={handleAdd} />
        <ul>
         {todos.map((item, index) => (
-          <li key={index}>{item}</li>
+          <li key={index}>
+            <span>{item}</span>
+            <button onClick={() => handleDelete(index)} >Delete</button>
+          </li>
         ))}
        </ul>
     </div>
