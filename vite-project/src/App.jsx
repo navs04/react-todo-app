@@ -5,11 +5,24 @@ function App() {
   const [todos, setTodos] = useState([]);
 
   function handleAdd(todo){
-    setTodos([...todos, todo]);
+    setTodos([...todos, {text: todo, completed: false}]);
   }
 
   function handleDelete(todoIndex){
     const updatedTodos = todos.filter((_, index) => index !== todoIndex);
+    setTodos(updatedTodos);
+  }
+
+  function handleToggle(todoIndex){
+    const updatedTodos = todos.map((item, index) => {
+      if(index === todoIndex){
+        return {
+          ...item,
+          completed : !item.completed
+        };
+      }
+      return item;
+    })
     setTodos(updatedTodos);
   }
 
@@ -20,7 +33,10 @@ function App() {
        <ul>
         {todos.map((item, index) => (
           <li key={index}>
-            <span>{item}</span>
+            <span 
+            onClick = {() => handleToggle(index)}
+            style={{textDecoration: item.completed? "line-through" : "none"
+            }}>{item.text}</span>
             <button onClick={() => handleDelete(index)} >Delete</button>
           </li>
         ))}
@@ -41,7 +57,10 @@ function Form({onAdd}){
         onChange={(e) => setText(e.target.value)}
         />
       </label>
-      <button onClick={ () => onAdd(text)}>Add</button>
+      <button onClick={ () => {
+        onAdd(text);
+        setText('');
+      }}>Add</button>
     </div>
   );
 }
