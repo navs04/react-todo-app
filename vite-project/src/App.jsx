@@ -4,7 +4,16 @@ import { useState, useEffect } from 'react';
 function App() {
   const [todos, setTodos] = useState(() => {
     const stored = localStorage.getItem("todos");
-    return stored ? JSON.parse(stored) : [];
+
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if(parsed.length > 0) return parsed;
+    }
+    
+    return [
+      { text: "Finish React Todo App UI improvements", completed: false },
+      { text: "Apply to 3 internships today", completed: false },
+    ];
   });
 
   function handleAdd(todo){
@@ -34,40 +43,63 @@ function App() {
   }, [todos]);
 
   return (
-    <div>
-       <h1>Todo App</h1>
-       <Form onAdd={handleAdd} />
-       <ul>
-        {todos.map((item, index) => (
-          <li key={index}>
-            <span 
-            onClick = {() => handleToggle(index)}
-            style={{textDecoration: item.completed? "line-through" : "none"
-            }}>{item.text}</span>
-            <button onClick={() => handleDelete(index)} >Delete</button>
-          </li>
-        ))}
-       </ul>
+ <div className="app-container">
+  <h1 className="main-heading">✨ TaskFlow</h1>
+  <p className="subtitle">Stay organized. Stay focused.</p>
+
+    <div className="todo-card">
+      <Form onAdd={handleAdd} />
+
+      {todos.length === 0 ? (
+        <p className="empty-state">No todos yet. Add one 🚀</p>
+      ) : (
+        <ul className="todo-list">
+          {todos.map((item, index) => (
+            <li key={index} className="todo-item">
+              <span
+                className={`todo-text ${item.completed ? "completed" : ""}`}
+                onClick={() => handleToggle(index)}
+              >
+                {item.text}
+              </span>
+
+              <button
+                className="delete-btn"
+                onClick={() => handleDelete(index)}
+              >
+                ✕
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
-  );
+  </div>
+);
 }
 
-function Form({onAdd}){
+function Form({ onAdd }) {
   const [text, setText] = useState('');
 
-  return(
-    <div>
-       <label>
-        Add todo: 
-        <input type="text"
-        value= {text}
+  return (
+    <div className="form">
+      <input
+        type="text"
+        placeholder="Add a new todo..."
+        value={text}
         onChange={(e) => setText(e.target.value)}
-        />
-      </label>
-      <button onClick={ () => {
-        onAdd(text);
-        setText('');
-      }}>Add</button>
+      />
+
+      <button
+        onClick={() => {
+          if (!text.trim()) return;
+
+          onAdd(text);
+          setText('');
+        }}
+      >
+        Add
+      </button>
     </div>
   );
 }
