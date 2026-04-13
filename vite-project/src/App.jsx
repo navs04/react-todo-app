@@ -1,8 +1,11 @@
 import './App.css'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function App() {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(() => {
+    const stored = localStorage.getItem("todos");
+    return stored ? JSON.parse(stored) : [];
+  });
 
   function handleAdd(todo){
     setTodos([...todos, {text: todo, completed: false}]);
@@ -25,6 +28,10 @@ function App() {
     })
     setTodos(updatedTodos);
   }
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
 
   return (
     <div>
