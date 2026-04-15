@@ -4,16 +4,7 @@ import { useState, useEffect } from 'react';
 function App() {
   const [todos, setTodos] = useState(() => {
     const stored = localStorage.getItem("todos");
-
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      if(parsed.length > 0) return parsed;
-    }
-    
-    return [
-      { text: "Finish React Todo App UI improvements", completed: false },
-      { text: "Apply to 3 internships today", completed: false },
-    ];
+    return stored ? JSON.parse(stored) : [];
   });
 
   function handleAdd(todo){
